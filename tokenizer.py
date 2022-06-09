@@ -20,4 +20,3 @@ def tokenize(text: str) -> Iterator[Token]:
     if temp:
         yield Token.of(temp)
     yield Token.of("\n")
-    yield Token.of("\n")

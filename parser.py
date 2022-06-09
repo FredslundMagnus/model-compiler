@@ -9,23 +9,29 @@ from functools import reduce
 
 
 
-def parser(tokens: Iterator[Token]) -> list[Expression]:
+def parser(tokens: Iterator[Token]) -> tuple[list[Expression], list[Error], dict]:
     """
-    Parses the tokens and prints the result.
+    Parses the tokens.
     """
-    # temp = [], [], {}
-    # def reducer(acc: tuple[list[Expression], list[Error], dict], token: Token) -> list[Expression]:
-    #     expressions, errors, state = acc
-    #     error, isDone, expression = Expression.eat(token, state)
-    #     if isDone:
-    #         expressions.append(expression)
-    #     if error is not None:
-    #         errors.append(error)
-    #     return expressions, errors, state
-    # expresions = reduce(reducer, tokens, temp)
-    # print(expresions)
     state = {}
-    expression = Expression.eat(tokens, state)
+    # for _ in range(7):
+    #     expression = Expression.eat(tokens, state)
+    #     print(expression, end="")
+    expressions = []
+    errors = []
+    while True:
+        try:
+            expression = Expression.eat(tokens, state)
+        except:
+            break
+        if isinstance(expression, Error):
+            errors.append(expression)
+        else:
+            expressions.append(expression)
+    
+    return expressions, errors, state
+
+
 
 with open("game.model", "r") as file:
     text = file.read()
