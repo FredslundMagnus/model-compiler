@@ -7,6 +7,7 @@ import 'package:mafia/utils/imports.dart'
 
 enum Status
 enum Roles
+
 typedef PlayerId = String
 
 model Game(playerId: PlayerId):

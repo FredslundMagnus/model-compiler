@@ -6,13 +6,15 @@ from tokens import *
 
 class Expression:
     @staticmethod
-    def eat(tokens: Iterable[Token], state: dict) -> tuple[Expression | None, Error | None]:
+    def eat(tokens: Iterable[Token]) -> tuple[Expression | Error]:
         token = next(tokens)
         match token:
             case ImportKeywordToken():
                 return ImportExpression.of(token, tokens)
             case NewLineToken():
                 return NewLinesExpression(token)
+            case EnumKeywordToken():
+                return EnumExpression.of(token, tokens)
 
     def format(self) -> str:
         return str(self)
@@ -72,9 +74,10 @@ class ImportExpression(Expression):
         spaces, token = getAllOfType(tokens, SpaceToken, [token])
 
         space = "".join(s.value for s in spaces)
-        if isinstance(token, NewLineToken):
-            return ImportExpression(import_token, space_token, string_token, NewLineToken(space + "\n"))
-        return UnexpectedCharacterError(token.value, "a new line", [import_token, space_token, string_token, SpaceToken(space), token, *collectUntilType(tokens, NewLineToken)])
+        if not isinstance(token, NewLineToken):
+            return UnexpectedCharacterError(token.value, "a new line", [import_token, space_token, string_token, SpaceToken(space), token, *collectUntilType(tokens, NewLineToken)])
+        return ImportExpression(import_token, space_token, string_token, NewLineToken(space + "\n"))
+        
 
     def __str__(self) -> str:
         return f"{self.import_token.value}{self.space_token.value}{self.string_token.value}{self.end_line.value}"
@@ -89,3 +92,41 @@ class NewLinesExpression(Expression):
 
     def __str__(self) -> str:
         return self.end_line.value
+
+class EnumExpression(Expression):
+    def __init__(self, enum_token: EnumKeywordToken, space_token: SpaceToken, name_token: StringToken, end_line: NewLineToken) -> None:
+        self.enum_token = enum_token
+        self.space_token = space_token
+        self.name_token = name_token
+        self.end_line = end_line
+
+    @staticmethod
+    def of(token: Token, tokens: Iterable[Token]) -> Error | Expression:
+        enum_token = token
+        spaces, token = getAllOfType(tokens, SpaceToken)
+        if len(spaces) == 0:
+            if isinstance(token, NewLineToken):
+                return UnexpectedCharacterError(token.value, "a string", [enum_token, token])
+            return UnexpectedCharacterError(token.value, "a space", [enum_token, *collectUntilType(tokens, NewLineToken)])
+        space = "".join(s.value for s in spaces)
+        space_token = SpaceToken(space)
+        if not isinstance(token, NameToken):
+            if isinstance(token, NewLineToken):
+                return UnexpectedCharacterError(token.value, "a name", [enum_token, space_token, token])
+            return UnexpectedCharacterError(token.value, "a name", [enum_token, space_token, token, *collectUntilType(tokens, NewLineToken)])
+        name_token = NameToken(token)
+
+        spaces, token = getAllOfType(tokens, SpaceToken)
+        space = "".join(s.value for s in spaces)
+
+        if not isinstance(token, NewLineToken):
+            return UnexpectedCharacterError(token.value, "a new line", [enum_token, space_token, name_token, SpaceToken(space), token, *collectUntilType(tokens, NewLineToken)])
+        
+        return EnumExpression(enum_token, space_token, name_token, NewLineToken(space + "\n"))
+
+    def __str__(self) -> str:
+        return f"{self.import_token.value}{self.space_token.value}{self.string_token.value}{self.end_line.value}"
+
+    def format(self) -> str:
+        return f"{self.enum_token.value} {self.name_token.value}\n"
+        

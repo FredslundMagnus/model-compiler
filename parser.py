@@ -3,25 +3,17 @@ from errors import Error
 from expressions import Expression
 from tokenizer import tokenize
 from tokens import Token
-from functools import reduce
-
-
-
 
 
 def parser(tokens: Iterator[Token]) -> tuple[list[Expression], list[Error], dict]:
     """
     Parses the tokens.
     """
-    state = {}
-    # for _ in range(7):
-    #     expression = Expression.eat(tokens, state)
-    #     print(expression, end="")
     expressions = []
     errors = []
     while True:
         try:
-            expression = Expression.eat(tokens, state)
+            expression = Expression.eat(tokens)
         except:
             break
         if isinstance(expression, Error):
@@ -29,7 +21,7 @@ def parser(tokens: Iterator[Token]) -> tuple[list[Expression], list[Error], dict
         else:
             expressions.append(expression)
     
-    return expressions, errors, state
+    return expressions, errors
 
 
 
@@ -37,4 +29,4 @@ with open("game.model", "r") as file:
     text = file.read()
 
 
-parser(tokenize(text))
+print(*parser(tokenize(text)))
