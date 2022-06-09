@@ -1,0 +1,20 @@
+string
+    '"' characters '"'
+    "'" characters "'"
+
+characters
+    ""
+    character characters
+
+character
+    "/"
+    "_"
+    a-A
+    z-Z
+
+newline
+    "\n"
+
+import
+    "import" string newline
+

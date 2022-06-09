@@ -1,0 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart'
+import 'package:mafia/data/providers.dart'
+import 'package:mafia/logic/action.dart'
+import 'package:mafia/logic/roles.dart'
+import 'package:mafia/logic/status.dart'
+import 'package:mafia/utils/imports.dart'
+
+enum Status
+enum Roles
+typedef PlayerId = String
+
+model Game(playerId: PlayerId):
+    users: Set<PlayerId> = {}
+    roles: Set<Roles> = {}
+    status: Status = Status.chooseUsers
+    creator: PlayerId = playerId
+    roleMap: Map<PlayerId, Roles> = {}
+    test: Status
