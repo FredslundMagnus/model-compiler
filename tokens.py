@@ -4,11 +4,15 @@ from errors import Error
 
 class Token:
     in_string = None
+
+    __match_args__ = ("value",)
+
+
     def __init__(self, value: str) -> None:
         self.value = value
 
     def __str__(self) -> str:
-        return self.value
+        return f"{type(self).__name__}(" +self.value.replace('\n', '\\n') + ")"
 
     def __repr__(self) -> str:
         return str(self)
