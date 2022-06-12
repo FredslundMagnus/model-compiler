@@ -161,6 +161,7 @@ class IndentedExpression(Expression):
 
 
     def __str__(self) -> str:
+        spaces = ' ' * self.spaces
         if self.value is None:
-            return f"    {self.name_token.value}: {self.type_token.value}"
-        return f"    {self.name_token.value}: {self.type_token.value} = " + ''.join(token.value for token in self.value)
+            return f"{spaces}{self.name_token.value}: {self.type_token.value}"
+        return f"{spaces}{self.name_token.value}: {self.type_token.value} = " + ''.join(token.value for token in self.value)
