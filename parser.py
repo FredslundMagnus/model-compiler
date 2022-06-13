@@ -5,7 +5,7 @@ from tokenizer import tokenize
 from tokens import Token
 
 
-def parser(tokens: Iterator[Token]) -> tuple[list[Expression], list[Error], dict]:
+def parser(tokens: Iterator[Token]) -> tuple[list[Expression], list[Error]]:
     """
     Parses the tokens.
     """

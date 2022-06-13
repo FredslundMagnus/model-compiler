@@ -96,6 +96,8 @@ class EnumExpression(Expression):
     def __init__(self, name_token: NameToken) -> None:
         self.name_token = name_token
 
+    __match_args__ = ("name_token",)
+
     @staticmethod
     def of(token: EnumKeywordToken, tokens: Iterable[Token]) -> EnumExpression:
         _, name_token, _ = match_3(tokens, SpaceToken, NameToken, NewLineToken)
@@ -109,6 +111,8 @@ class TypedefExpression(Expression):
     def __init__(self, name_token_1: NameToken, name_token_2: ClassToken | NameToken) -> None:
         self.name_token_1 = name_token_1
         self.name_token_2 = name_token_2
+
+    __match_args__ = ("name_token_1", "name_token_2")
 
     @staticmethod
     def of(token: TypedefKeywordToken, tokens: Iterable[Token]) -> TypedefExpression:
